@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "sequelize db:migrate node app.js",
+    "start": "node app.js sequelize db:migrate",
     "start:dev": "nodemon app.js",
     "make_model": "npx sequelize-cli model:generate --name Expense --attributes type:string,description:string,amount:number,date:date",
     "migrate": "npx sequelize-cli db:migrate",
