@@ -39,7 +39,7 @@ exports.getOneExpense = async (req, res) => {
 
     try {
         const { id } = req.params;
-        const expenses = await Expense.findByPk(id);
+        const expenses = await models.Expense.findByPk(id);
         res.status(200).json(expenses);
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -55,7 +55,7 @@ exports.updateExpenses = async (req, res) => {
         const { id } = req.params;
         const { name, amount, date, category_id } = req.body;
     
-        const expenses = await Expense.findByPk(id);
+        const expenses = await models.Expense.findByPk(id);
         expenses.name = name;
         expenses.amount = amount;
         expenses.date = date;
@@ -78,7 +78,7 @@ exports.deleteExpenses = async (req, res) => {
 
         const {id} = req.params;
 
-        await Expenses.destroy({
+        await models.Expense.destroy({
             where: {
                 id,
             },
@@ -95,8 +95,8 @@ exports.deleteExpenses = async (req, res) => {
 exports.getBalance = async (req, res) => {
 
     try {
-        const income = await models.Expense.sum('amount', {where: {movementType: 'income'}});
-        const expense = await models.Expense.sum('amount', {where: {movementType: 'expense'}});
+        const income = await models.Expense.sum('amount', {where: {type: 'income'}});
+        const expense = await models.Expense.sum('amount', {where: {type: 'expense'}});
 
         const balance = income - expense;
         res.status(200).json({
