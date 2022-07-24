@@ -1,3 +1,4 @@
+const { sequelize } = require('../models');
 const models = require('../models');
 
 exports.postExpenses = async (req, res) => {
@@ -27,7 +28,13 @@ exports.postExpenses = async (req, res) => {
 exports.getAllExpenses = async (req, res) => {
 
     try {
-        const expenses = await models.Expense.findAll();
+        const expenses = await models.Expense.findAll({
+            attributes: {
+                include: [
+                    [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date']
+                ],
+            },
+        });
         res.status(200).json(expenses);
     } catch (error) {
         return res.status(500).json({message: error.message})
