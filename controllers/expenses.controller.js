@@ -28,19 +28,27 @@ exports.postExpenses = async (req, res) => {
 exports.getAllExpenses = async (req, res) => {
 
     try {
+
         const expenses = await models.Expense.findAll({
+            attributes: {
+                include: [[sequelize.col('category.name'), 'category_name']]
+            },
+            include: [{
+                attributes: [],
+                model: models.Category,
+                as: 'category'
+            }]
+        })    
+
+
+/*         const expenses = await models.Expense.findAll({
             include: [{
                 model: models.Category,
-                attributes: ['name'],
+                attributes: [['name', 'category_name']],
                 as: 'category',
             }],
                 raw: true
-/*             attributes: {
-                include: [
-                    [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
-                ],
-            }, */
-        });
+        }); */
         res.status(200).json(expenses);
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -55,9 +63,15 @@ exports.getOneExpense = async (req, res) => {
         const expenses = await models.Expense.findByPk(id, {
             attributes: {
                 include: [
-                    [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'] 
+                    [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
+                    [sequelize.col('category.name'), 'category_name'] 
                 ]
-            }
+            },
+            include: [{
+                attributes: [],
+                model: models.Category,
+                as: 'category'
+            }]
         });
         res.status(200).json(expenses);
     } catch (error) {
