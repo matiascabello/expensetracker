@@ -29,11 +29,17 @@ exports.getAllExpenses = async (req, res) => {
 
     try {
         const expenses = await models.Expense.findAll({
-            attributes: {
+            include: [{
+                model: models.Category,
+                attributes: ['name'],
+                as: 'category',
+            }],
+                raw: true
+/*             attributes: {
                 include: [
-                    [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date']
+                    [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
                 ],
-            },
+            }, */
         });
         res.status(200).json(expenses);
     } catch (error) {
